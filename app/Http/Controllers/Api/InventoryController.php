@@ -93,7 +93,11 @@ class InventoryController extends Controller
 
         $inventory = Inventory::find($validated['id']);
         if (isset($inventory) && $inventory->image != null) {
-            $inventory->image = url($inventory->image);
+            $fullUrl = url('/');
+            $splitUrl = explode('/', $fullUrl);
+            array_pop($splitUrl);
+            $mainUrl = implode('/', $splitUrl);
+            $inventory->image = $mainUrl . '/storage/app/' . $inventory->image;
         }
 
         return response([
