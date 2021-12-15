@@ -41,6 +41,6 @@ class AuthController extends Controller
             'msg' => 'Failed, invalid username / password',
             'code' => 403,
             'data' => []
-        ], 403);
+        ]);
     }
 }

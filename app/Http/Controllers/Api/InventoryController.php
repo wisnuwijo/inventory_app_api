@@ -92,6 +92,9 @@ class InventoryController extends Controller
         ]);
 
         $inventory = Inventory::find($validated['id']);
+        if (isset($inventory) && $inventory->image != null) {
+            $inventory->image = url($inventory->image);
+        }
 
         return response([
             'msg' => 'Success',
