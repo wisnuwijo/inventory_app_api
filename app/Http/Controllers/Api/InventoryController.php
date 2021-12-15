@@ -143,7 +143,8 @@ class InventoryController extends Controller
                 'name' => $validated['name'],
                 'stock' => $validated['stock'],
                 'unit' => $validated['unit'],
-                'image' => $imagePath
+                'image' => $imagePath,
+                'note' => $request->note
             ]);
         }
 

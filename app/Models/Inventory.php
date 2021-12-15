@@ -14,6 +14,7 @@ class Inventory extends Model
         'name',
         'stock',
         'unit',
-        'image'
+        'image',
+        'note'
     ];
 }
