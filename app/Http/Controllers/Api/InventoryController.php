@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Inventory;
+use App\Models\User;
 use PDF;
+use Illuminate\Support\Facades\Http;
 
 class InventoryController extends Controller
 {
@@ -64,6 +66,23 @@ class InventoryController extends Controller
                 'msg' => 'Error, something wrong happen',
                 'code' => 500
             ], 500);
+        }
+
+        if ($request->user->role == 'employee') {
+            $owner = User::select('firebase_token')->where('role','owner')->get();
+            $ownerTokenList = [];
+            for ($i=0; $i < count($owner); $i++) { 
+                $element = $owner[$i];
+                $ownerTokenList[] = $element->firebase_token;
+            }
+
+            $this->notification(
+                $ownerTokenList,
+                [
+                    "title" => "Mohon cek",
+                    "body" => "Sebuah inventory sudah ditambahkan"
+                ]
+            );
         }
 
         return response([
@@ -186,5 +205,22 @@ class InventoryController extends Controller
         $pdf = PDF::loadView('report.pdf_view', $inventory);
 
         return $pdf->stream('pdf_file.pdf');
+    }
+
+    public function notification($registrationIds, $notification)
+    {
+        $url = 'https://fcm.googleapis.com/fcm/send';
+        $serverKey = 'AAAAuPSOs1E:APA91bFNx6UbpL-X2Eyuirrm92ONQSFUg-v0s8uZnaH3al2jcX3wom11mkB1p8JMNohgaSlmOar0HanFNWbSm-n8gTMAqyjlo03jmrGozMT76YLzNyA4aIOhc37sQEKFFDqaS-qZYqwq';
+  
+        $data = [
+            "registration_ids" => $registrationIds,
+            "notification" => $notification
+        ];
+
+        $req = Http::withHeaders([
+                'Authorization' => 'key=' . $serverKey,
+                'Content-Type' => 'application/json'
+            ])
+            ->post($url, $data);
     }
 }
