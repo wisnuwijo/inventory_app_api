@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use App\User;
+use App\Models\User;
 
 class UserController extends Controller
 {
     public function update_token(Request $req)
     {
         $user = $req->user;
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($req->all(), [
             'firebase_token' => 'required'
         ]);
 
